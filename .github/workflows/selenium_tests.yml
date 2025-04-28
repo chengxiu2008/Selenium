@@ -22,10 +22,19 @@ jobs:
     - name: Install Chrome
       uses: browser-actions/setup-chrome@v1
 
-    - name: Install ChromeDriver
-      uses: nanasess/setup-chromedriver@v2
-      with:
-        chromedriver-version: latest
+    - name: Install ChromeDriver manually
+      run: |
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
+        DRIVER_VERSION=$(curl -sS "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$MAJOR_VERSION")
+        wget "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$DRIVER_VERSION/linux64/chromedriver-linux64.zip"
+        unzip chromedriver-linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+
+    - name: Run Selenium tests
+      run: |
+        pytest tests/
 
     - name: Run Selenium tests
       run: |
