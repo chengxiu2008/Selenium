@@ -34,8 +34,10 @@ jobs:
 
     - name: Run Selenium tests
       run: |
-        pytest tests/
-
-    - name: Run Selenium tests
-      run: |
-        pytest tests/
+        pytest tests/ --html=report.html --self-contained-html
+        
+    - name: Upload Pytest HTML Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-report
+        path: report.html
